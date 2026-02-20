@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zenova Study</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a1628;
+    --deep-blue: #0d2145;
+    --mid-blue: #1a3a6b;
+    --accent-blue: #1e5cff;
+    --light-blue: #4a80f5;
+    --sky: #7ab3ff;
+    --white: #ffffff;
+    --off-white: #f4f7ff;
+    --text-dark: #0a1628;
+    --text-muted: #5a6e8c;
+    --border: #d0dff5;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--white);
+    color: var(--text-dark);
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: rgba(10,22,40,0.97);
+    backdrop-filter: blur(12px);
+    padding: 0 2rem;
+    height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem; font-weight: 900;
+    color: var(--white);
+    letter-spacing: -0.5px;
+  }
+  .nav-logo span { color: var(--light-blue); }
+  .nav-links { display: flex; gap: 0.25rem; }
+  .nav-link {
+    background: none; border: none; cursor: pointer;
+    color: rgba(255,255,255,0.65);
+    font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 500;
+    padding: 0.5rem 0.85rem; border-radius: 8px;
+    transition: all 0.2s;
+  }
+  .nav-link:hover, .nav-link.active {
+    background: rgba(255,255,255,0.1); color: var(--white);
+  }
+  .nav-link.active { color: var(--sky); }
+
+  /* ── PAGE SYSTEM ── */
+  .page { display: none; min-height: 100vh; padding-top: 64px; }
+  .page.active { display: block; }
+
+  /* ── HOMEPAGE ── */
+  .hero {
+    background: var(--navy);
+    padding: 6rem 2rem 5rem;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(30,92,255,0.25) 0%, transparent 70%);
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(74,128,245,0.15); border: 1px solid rgba(74,128,245,0.3);
+    padding: 0.35rem 1rem; border-radius: 100px;
+    font-size: 0.8rem; font-weight: 600; color: var(--sky);
+    letter-spacing: 0.05em; text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 900;
+    color: var(--white); line-height: 1.1;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 em { color: var(--light-blue); font-style: normal; }
+  .hero-sub {
+    color: rgba(255,255,255,0.6); font-size: 1.1rem; max-width: 500px; margin: 0 auto 2.5rem;
+    line-height: 1.7;
+  }
+  .hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--accent-blue); color: var(--white);
+    border: none; padding: 0.85rem 2rem; border-radius: 12px;
+    font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+    box-shadow: 0 4px 20px rgba(30,92,255,0.4);
+  }
+  .btn-primary:hover { background: var(--light-blue); transform: translateY(-2px); }
+  .btn-outline {
+    background: transparent; color: var(--white);
+    border: 1px solid rgba(255,255,255,0.3); padding: 0.85rem 2rem; border-radius: 12px;
+    font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--sky); color: var(--sky); }
+
+  /* Motivation strip */
+  .motivation-strip {
+    background: var(--deep-blue);
+    padding: 3.5rem 2rem;
+    text-align: center;
+  }
+  .motivation-strip h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; color: var(--sky); letter-spacing: 0.1em;
+    text-transform: uppercase; margin-bottom: 2rem;
+  }
+  .motivation-carousel {
+    position: relative; min-height: 100px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .motivation-quote {
+    position: absolute; opacity: 0;
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    font-family: 'Playfair Display', serif; font-weight: 700;
+    color: var(--white); max-width: 700px;
+    transition: opacity 0.8s ease;
+    line-height: 1.4;
+  }
+  .motivation-quote.show { opacity: 1; }
+  .motivation-author { color: var(--sky); font-size: 0.9rem; margin-top: 0.5rem; font-family: 'DM Sans', sans-serif; }
+
+  /* Benefits */
+  .section { padding: 5rem 2rem; }
+  .section-title {
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 900;
+    color: var(--navy); margin-bottom: 0.75rem;
+  }
+  .section-sub { text-align: center; color: var(--text-muted); margin-bottom: 3rem; font-size: 1rem; }
+  .benefits-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem; max-width: 1100px; margin: 0 auto;
+  }
+  .benefit-card {
+    background: var(--off-white); border-radius: 16px;
+    padding: 2rem 1.5rem; border: 1px solid var(--border);
+    transition: all 0.25s;
+  }
+  .benefit-card:hover { box-shadow: 0 8px 32px rgba(10,22,40,0.1); transform: translateY(-4px); }
+  .benefit-icon { font-size: 2rem; margin-bottom: 1rem; }
+  .benefit-card h3 { font-weight: 700; color: var(--navy); margin-bottom: 0.5rem; }
+  .benefit-card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; }
+
+  /* Testimonials */
+  .testimonials-bg { background: var(--navy); }
+  .testimonials-bg .section-title { color: var(--white); }
+  .testimonials-bg .section-sub { color: rgba(255,255,255,0.5); }
+  .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; max-width: 1000px; margin: 0 auto; }
+  .testimonial-card {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 16px; padding: 1.75rem;
+  }
+  .testimonial-stars { color: #f5c842; margin-bottom: 0.75rem; font-size: 0.9rem; }
+  .testimonial-card p { color: rgba(255,255,255,0.8); font-size: 0.95rem; line-height: 1.7; margin-bottom: 1rem; font-style: italic; }
+  .testimonial-author { color: var(--sky); font-weight: 600; font-size: 0.875rem; }
+
+  /* CTA */
+  .cta-section {
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--mid-blue) 100%);
+    padding: 5rem 2rem; text-align: center;
+  }
+  .cta-section h2 { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--white); margin-bottom: 1rem; }
+  .cta-section p { color: rgba(255,255,255,0.75); margin-bottom: 2rem; font-size: 1.05rem; }
+  .cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .btn-white {
+    background: var(--white); color: var(--accent-blue);
+    border: none; padding: 0.85rem 2rem; border-radius: 12px;
+    font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 700;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+
+  /* Footer */
+  footer {
+    background: var(--navy); color: rgba(255,255,255,0.65);
+    padding: 3.5rem 2rem 2rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; max-width: 1000px; margin: 0 auto 2rem; }
+  .footer-brand .nav-logo { font-size: 1.3rem; margin-bottom: 0.75rem; display: block; }
+  .footer-brand p { font-size: 0.875rem; line-height: 1.6; }
+  .footer-col h4 { color: var(--white); font-weight: 700; margin-bottom: 0.75rem; font-size: 0.95rem; }
+  .footer-col a { display: block; color: rgba(255,255,255,0.55); font-size: 0.875rem; margin-bottom: 0.4rem; text-decoration: none; transition: color 0.2s; }
+  .footer-col a:hover { color: var(--sky); }
+  .footer-social { display: flex; gap: 0.75rem; margin-top: 0.5rem; }
+  .social-btn {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem;
+    transition: all 0.2s;
+  }
+  .social-btn:hover { background: var(--accent-blue); color: var(--white); border-color: var(--accent-blue); }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1.5rem;
+    text-align: center; font-size: 0.8rem; color: rgba(255,255,255,0.35);
+    max-width: 1000px; margin: 0 auto;
+  }
+
+  /* ── INNER PAGES ── */
+  .inner-hero {
+    background: var(--navy); padding: 3.5rem 2rem 2.5rem;
+    text-align: center;
+  }
+  .inner-hero h1 {
+    font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--white);
+    margin-bottom: 0.5rem;
+  }
+  .inner-hero p { color: rgba(255,255,255,0.55); }
+  .page-content { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+
+  /* Cards */
+  .card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 16px; padding: 1.75rem; margin-bottom: 1.5rem;
+    box-shadow: 0 2px 12px rgba(10,22,40,0.05);
+  }
+  .card h3 { font-weight: 700; color: var(--navy); margin-bottom: 1rem; font-size: 1.1rem; }
+
+  /* PROFILE */
+  .profile-avatar {
+    width: 100px; height: 100px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-blue), var(--light-blue));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.5rem; margin: 0 auto 1rem; color: white;
+    cursor: pointer; position: relative; overflow: hidden;
+  }
+  .profile-avatar input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .profile-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; position: absolute; inset: 0; }
+  .profile-name { text-align: center; font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--navy); }
+  .profile-email { text-align: center; color: var(--text-muted); margin-bottom: 1.5rem; }
+  .form-group { margin-bottom: 1rem; }
+  .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--navy); margin-bottom: 0.35rem; }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 0.75rem 1rem; border: 1.5px solid var(--border);
+    border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+    color: var(--text-dark); outline: none; transition: border-color 0.2s;
+    background: var(--off-white);
+  }
+  .form-group input:focus, .form-group textarea:focus { border-color: var(--accent-blue); }
+  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1rem; }
+  .stat-box { background: var(--off-white); border-radius: 12px; padding: 1rem; text-align: center; }
+  .stat-box .num { font-size: 1.8rem; font-weight: 900; color: var(--accent-blue); font-family: 'Playfair Display', serif; }
+  .stat-box .lbl { font-size: 0.75rem; color: var(--text-muted); }
+
+  /* TIMETABLE */
+  .timetable-grid { display: grid; grid-template-columns: 80px repeat(7, 1fr); gap: 0; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .tt-header { background: var(--navy); color: var(--white); font-weight: 700; font-size: 0.8rem; padding: 0.65rem; text-align: center; }
+  .tt-time { background: var(--off-white); font-size: 0.75rem; color: var(--text-muted); padding: 0.5rem; text-align: center; font-weight: 600; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: center; }
+  .tt-cell {
+    border-left: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    min-height: 52px; position: relative; cursor: pointer; padding: 2px;
+    transition: background 0.15s;
+  }
+  .tt-cell:hover { background: var(--off-white); }
+  .tt-entry {
+    background: var(--accent-blue); color: white; border-radius: 6px;
+    font-size: 0.72rem; padding: 3px 5px; margin: 1px;
+    cursor: pointer; line-height: 1.3;
+  }
+  .tt-entry:hover { background: var(--deep-blue); }
+  .reminder-badge { background: #e8f5e9; color: #2e7d32; font-size: 0.7rem; padding: 2px 8px; border-radius: 20px; margin-left: 8px; font-weight: 600; }
+
+  /* GOALS */
+  .goal-item {
+    display: flex; align-items: flex-start; gap: 1rem;
+    padding: 1rem; background: var(--off-white); border-radius: 12px;
+    margin-bottom: 0.75rem; border: 1px solid var(--border);
+  }
+  .goal-check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--accent-blue); cursor: pointer; flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .goal-check.done { background: var(--accent-blue); border-color: var(--accent-blue); }
+  .goal-check.done::after { content: '✓'; color: white; font-size: 0.75rem; font-weight: 700; }
+  .goal-text { flex: 1; }
+  .goal-text h4 { font-weight: 600; color: var(--navy); margin-bottom: 0.15rem; }
+  .goal-text .goal-meta { font-size: 0.8rem; color: var(--text-muted); }
+  .goal-delete { color: #e53935; background: none; border: none; cursor: pointer; font-size: 1.1rem; padding: 0.25rem; }
+  .progress-bar-wrap { background: var(--border); border-radius: 100px; height: 8px; margin-top: 0.5rem; }
+  .progress-bar-fill { background: linear-gradient(90deg, var(--accent-blue), var(--sky)); border-radius: 100px; height: 8px; transition: width 0.4s; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; margin-right: 4px; }
+  .tag-short { background: #e3f2fd; color: #1565c0; }
+  .tag-long { background: #f3e5f5; color: #6a1b9a; }
+  .tag-mid { background: #e8f5e9; color: #2e7d32; }
+
+  /* EXAM COUNTDOWN */
+  .exam-card {
+    background: var(--navy); color: white; border-radius: 20px;
+    padding: 2rem; margin-bottom: 1.5rem;
+    position: relative; overflow: hidden;
+  }
+  .exam-card::before {
+    content: '';
+    position: absolute; top: -30px; right: -30px;
+    width: 120px; height: 120px; border-radius: 50%;
+    background: rgba(74,128,245,0.15);
+  }
+  .exam-card h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 0.25rem; }
+  .exam-card .exam-date { color: rgba(255,255,255,0.55); font-size: 0.85rem; margin-bottom: 1.5rem; }
+  .countdown-boxes { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .cd-box { background: rgba(255,255,255,0.08); border-radius: 12px; padding: 0.75rem 1.25rem; text-align: center; min-width: 70px; }
+  .cd-num { font-size: 2rem; font-weight: 900; font-family: 'Playfair Display', serif; color: var(--sky); }
+  .cd-lbl { font-size: 0.7rem; color: rgba(255,255,255,0.5); letter-spacing: 0.05em; text-transform: uppercase; }
+  .exam-delete { position: absolute; top: 1rem; right: 1rem; background: rgba(255,255,255,0.1); border: none; border-radius: 8px; padding: 0.35rem 0.6rem; color: rgba(255,255,255,0.6); cursor: pointer; font-size: 0.85rem; }
+  .exam-delete:hover { background: #e53935; color: white; }
+  .urgent { border: 2px solid #ff6b6b; }
+  .urgent::after { content: '⚠ SOON'; position: absolute; top: 1rem; left: 50%; transform: translateX(-50%); background: #ff6b6b; color: white; font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+
+  /* SYLLABUS */
+  .subject-card { margin-bottom: 1.5rem; }
+  .subject-header {
+    background: var(--navy); color: white;
+    padding: 1rem 1.25rem; border-radius: 12px 12px 0 0;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .subject-header h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; }
+  .subject-progress-text { font-size: 0.85rem; color: var(--sky); font-weight: 600; }
+  .subject-body { background: var(--off-white); border: 1px solid var(--border); border-top: none; border-radius: 0 0 12px 12px; padding: 1rem; }
+  .topic-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0; border-bottom: 1px solid var(--border); }
+  .topic-item:last-child { border-bottom: none; }
+  .topic-checkbox { width: 18px; height: 18px; accent-color: var(--accent-blue); cursor: pointer; }
+  .topic-name { flex: 1; font-size: 0.9rem; color: var(--text-dark); }
+  .topic-name.done { text-decoration: line-through; color: var(--text-muted); }
+  .topic-delete { background: none; border: none; color: #e53935; cursor: pointer; font-size: 0.9rem; }
+  .overall-progress {
+    background: var(--navy); color: white; border-radius: 16px;
+    padding: 1.5rem 2rem; margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;
+  }
+  .op-ring { position: relative; width: 80px; height: 80px; flex-shrink: 0; }
+  .op-ring svg { transform: rotate(-90deg); }
+  .op-ring .ring-bg { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 8; }
+  .op-ring .ring-fill { fill: none; stroke: var(--sky); stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 0.5s; }
+  .op-ring .ring-text { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.1rem; color: white; }
+  .op-info h4 { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-bottom: 0.25rem; }
+  .op-info p { color: rgba(255,255,255,0.55); font-size: 0.875rem; }
+
+  /* Notifications */
+  .notif {
+    position: fixed; bottom: 2rem; right: 2rem; z-index: 9999;
+    background: var(--navy); color: white;
+    padding: 1rem 1.5rem; border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    display: flex; align-items: center; gap: 0.75rem;
+    font-size: 0.9rem; transform: translateX(200%);
+    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    max-width: 320px;
+    border-left: 4px solid var(--accent-blue);
+  }
+  .notif.show { transform: translateX(0); }
+  .notif-icon { font-size: 1.3rem; }
+
+  /* Misc */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } .stats-row { grid-template-columns: repeat(3,1fr); } .countdown-boxes { gap: 0.5rem; } .cd-box { min-width: 55px; padding: 0.5rem 0.75rem; } .cd-num { font-size: 1.5rem; } .nav-link { padding: 0.4rem 0.5rem; font-size: 0.8rem; } }
+
+  .chip-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .chip { background: var(--off-white); border: 1.5px solid var(--border); border-radius: 100px; padding: 0.35rem 1rem; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; color: var(--text-dark); }
+  .chip.sel, .chip:hover { background: var(--accent-blue); color: white; border-color: var(--accent-blue); }
+
+  .empty-state { text-align: center; padding: 3rem; color: var(--text-muted); }
+  .empty-state .emo { font-size: 3rem; margin-bottom: 0.75rem; }
+</style>
+</head>
+<body>
+
+<!-- NOTIFICATION -->
+<div class="notif" id="notif">
+  <span class="notif-icon">🔔</span>
+  <span id="notif-msg">Reminder!</span>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Zenova <span>Study</span></div>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="gotoPage('home')">Home</button>
+    <button class="nav-link" onclick="gotoPage('profile')">Profile</button>
+    <button class="nav-link" onclick="gotoPage('timetable')">Timetable</button>
+    <button class="nav-link" onclick="gotoPage('goals')">Goals</button>
+    <button class="nav-link" onclick="gotoPage('exams')">Exams</button>
+    <button class="nav-link" onclick="gotoPage('syllabus')">Syllabus</button>
+  </div>
+</nav>
+
+<!-- ═══════════════ HOME PAGE ═══════════════ -->
+<div class="page active" id="page-home">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-badge">✦ Your Academic Edge</div>
+    <h1>Study Smarter.<br><em>Achieve More.</em></h1>
+    <p class="hero-sub">Zenova Study is your all-in-one academic companion — track goals, manage time, and crush every exam.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="gotoPage('goals')">Get Started Free</button>
+      <button class="btn-outline" onclick="gotoPage('timetable')">View Timetable</button>
+    </div>
+  </div>
+
+  <!-- Motivation -->
+  <div class="motivation-strip">
+    <h2>✦ Daily Inspiration</h2>
+    <div class="motivation-carousel" id="motiv-carousel"></div>
+  </div>
+
+  <!-- Benefits -->
+  <div class="section">
+    <h2 class="section-title">Why Zenova Study?</h2>
+    <p class="section-sub">Everything you need to stay focused, organised, and ahead.</p>
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <div class="benefit-icon">🎯</div>
+        <h3>Goal Tracking</h3>
+        <p>Set short and long-term academic goals and track your progress every step of the way.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">⏰</div>
+        <h3>Smart Timetable</h3>
+        <p>Plan your study sessions with a visual weekly timetable and get timely reminders.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">📚</div>
+        <h3>Syllabus Tracker</h3>
+        <p>Never lose track of your topics. Mark what you've covered and see how far you've come.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">⏳</div>
+        <h3>Exam Countdown</h3>
+        <p>Know exactly how many days, hours, and minutes you have before each exam. No surprises.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">🧠</div>
+        <h3>Focus-Boosting</h3>
+        <p>Daily motivational quotes and structured planning help you stay in the right mindset.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">📈</div>
+        <h3>Better Results</h3>
+        <p>Students who plan consistently perform significantly better. Zenova helps you stay consistent.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Testimonials -->
+  <div class="testimonials-bg">
+    <div class="section">
+      <h2 class="section-title">What Students Say</h2>
+      <p class="section-sub">Real feedback from students using Zenova Study.</p>
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p>"Zenova Study completely changed how I prepare for exams. The countdown feature keeps me on my toes and the timetable is super easy to use."</p>
+          <div class="testimonial-author">— Amara T., University Student</div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p>"I love the motivation quotes on the homepage. Every time I open the app I feel ready to study. The syllabus tracker is also a game-changer."</p>
+          <div class="testimonial-author">— David O., A-Level Student</div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p>"Setting goals and tracking them weekly has made me so much more productive. Zenova Study is honestly the best study tool I've used."</p>
+          <div class="testimonial-author">— Chisom N., Secondary School Student</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <h2>Ready to Level Up?</h2>
+    <p>Join thousands of students using Zenova Study to reach their academic potential.</p>
+    <div class="cta-btns">
+      <button class="btn-white" onclick="gotoPage('goals')">Try Zenova Study Free</button>
+      <button class="btn-outline" onclick="window.open('https://www.youtube.com/channel/UCa_ojEhbLwwsK1JO6_NqRLw','_blank')">Join Our Community</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="nav-logo">Zenova <span style="color:var(--sky)">Study</span></span>
+        <p>Your all-in-one academic productivity companion. Plan, track, and achieve more with Zenova.</p>
+        <div class="footer-social" style="margin-top:1rem">
+          <a class="social-btn" href="https://www.youtube.com/channel/UCa_ojEhbLwwsK1JO6_NqRLw" target="_blank" title="YouTube">▶</a>
+          <a class="social-btn" href="mailto:zenovaofficial188@gmail.com" title="Email">✉</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <a href="#" onclick="gotoPage('home')">Home</a>
+        <a href="#" onclick="gotoPage('goals')">Goals</a>
+        <a href="#" onclick="gotoPage('timetable')">Timetable</a>
+        <a href="#" onclick="gotoPage('exams')">Exam Countdown</a>
+        <a href="#" onclick="gotoPage('syllabus')">Syllabus</a>
+      </div>
+      <div class="footer-col">
+        <h4>Zenova</h4>
+        <a href="https://www.youtube.com/channel/UCa_ojEhbLwwsK1JO6_NqRLw" target="_blank">Zenova YouTube</a>
+        <a href="mailto:zenovaofficial188@gmail.com">Contact Us</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Cookie Policy</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Zenova Study · A Zenova Brand · zenovaofficial188@gmail.com</p>
+    </div>
+  </footer>
+</div>
+
+<!-- ═══════════════ PROFILE PAGE ═══════════════ -->
+<div class="page" id="page-profile">
+  <div class="inner-hero">
+    <h1>My Profile</h1>
+    <p>Your personal Zenova Study space</p>
+  </div>
+  <div class="page-content">
+    <div class="card" style="text-align:center">
+      <div class="profile-avatar" id="avatar-circle" onclick="document.getElementById('avatar-input').click()">
+        <span id="avatar-emoji">👤</span>
+        <img id="avatar-img" src="" alt="" style="display:none">
+        <input type="file" id="avatar-input" accept="image/*" onchange="loadAvatar(event)" style="display:none">
+      </div>
+      <div class="profile-name" id="display-name">Your Name</div>
+      <div class="profile-email" id="display-email">your@email.com</div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="num" id="st-goals">0</div><div class="lbl">Goals</div></div>
+        <div class="stat-box"><div class="num" id="st-exams">0</div><div class="lbl">Exams</div></div>
+        <div class="stat-box"><div class="num" id="st-topics">0%</div><div class="lbl">Progress</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Edit Profile</h3>
+      <div class="two-col">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="p-name" placeholder="Enter your name" oninput="updateProfile()">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="p-email" placeholder="your@email.com" oninput="updateProfile()">
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="form-group">
+          <label>School / University</label>
+          <input type="text" id="p-school" placeholder="Your institution">
+        </div>
+        <div class="form-group">
+          <label>Study Level</label>
+          <select id="p-level">
+            <option>Secondary School</option>
+            <option>A-Level / College</option>
+            <option>Undergraduate</option>
+            <option>Postgraduate</option>
+            <option>Professional</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Bio / Study Goal</label>
+        <textarea id="p-bio" rows="3" placeholder="e.g. Aiming for distinction in all subjects this year..."></textarea>
+      </div>
+      <button class="btn-primary" onclick="saveProfile()" style="width:100%">Save Profile</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ TIMETABLE PAGE ═══════════════ -->
+<div class="page" id="page-timetable">
+  <div class="inner-hero">
+    <h1>Weekly Timetable</h1>
+    <p>Plan your study sessions — click any slot to add a class</p>
+  </div>
+  <div class="page-content" style="max-width:100%;padding:2rem 1rem">
+    <div class="card" style="max-width:900px;margin:0 auto 1.5rem">
+      <h3>Add Study Session</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0.75rem">
+        <div class="form-group">
+          <label>Subject</label>
+          <input type="text" id="tt-subject" placeholder="e.g. Mathematics">
+        </div>
+        <div class="form-group">
+          <label>Day</label>
+          <select id="tt-day">
+            <option value="1">Monday</option><option value="2">Tuesday</option>
+            <option value="3">Wednesday</option><option value="4">Thursday</option>
+            <option value="5">Friday</option><option value="6">Saturday</option>
+            <option value="0">Sunday</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Start Time</label>
+          <input type="time" id="tt-start" value="08:00">
+        </div>
+        <div class="form-group">
+          <label>End Time</label>
+          <input type="time" id="tt-end" value="09:00">
+        </div>
+        <div class="form-group">
+          <label>Reminder</label>
+          <select id="tt-reminder">
+            <option value="0">None</option>
+            <option value="10">10 min before</option>
+            <option value="30">30 min before</option>
+            <option value="60">1 hr before</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="addSession()">+ Add Session</button>
+    </div>
+    <div style="overflow-x:auto;max-width:100%">
+      <div id="timetable-grid" style="min-width:700px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ GOALS PAGE ═══════════════ -->
+<div class="page" id="page-goals">
+  <div class="inner-hero">
+    <h1>My Goals</h1>
+    <p>Set meaningful goals and track your progress</p>
+  </div>
+  <div class="page-content">
+    <div class="card">
+      <h3>Add New Goal</h3>
+      <div class="two-col">
+        <div class="form-group">
+          <label>Goal Title</label>
+          <input type="text" id="g-title" placeholder="e.g. Score 90% in Physics">
+        </div>
+        <div class="form-group">
+          <label>Target Date</label>
+          <input type="date" id="g-date">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Category</label>
+        <div class="chip-row">
+          <div class="chip sel" onclick="selectChip(this,'g-cat')" data-val="Short-term">Short-term</div>
+          <div class="chip" onclick="selectChip(this,'g-cat')" data-val="Mid-term">Mid-term</div>
+          <div class="chip" onclick="selectChip(this,'g-cat')" data-val="Long-term">Long-term</div>
+        </div>
+        <input type="hidden" id="g-cat" value="Short-term">
+      </div>
+      <div class="form-group">
+        <label>Notes (optional)</label>
+        <input type="text" id="g-notes" placeholder="Add details about this goal...">
+      </div>
+      <button class="btn-primary" onclick="addGoal()">+ Add Goal</button>
+    </div>
+
+    <div class="card">
+      <h3>Progress Overview</h3>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem">
+        <span style="font-size:0.9rem;color:var(--text-muted)" id="goals-count-label">0 / 0 goals completed</span>
+        <span style="font-weight:700;color:var(--accent-blue)" id="goals-pct">0%</span>
+      </div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="goals-bar" style="width:0%"></div></div>
+    </div>
+
+    <div id="goals-list"></div>
+  </div>
+</div>
+
+<!-- ═══════════════ EXAMS PAGE ═══════════════ -->
+<div class="page" id="page-exams">
+  <div class="inner-hero">
+    <h1>Exam Countdown</h1>
+    <p>Know exactly how much time you have left</p>
+  </div>
+  <div class="page-content">
+    <div class="card">
+      <h3>Add Exam</h3>
+      <div class="two-col">
+        <div class="form-group">
+          <label>Exam Name</label>
+          <input type="text" id="ex-name" placeholder="e.g. Biology Paper 1">
+        </div>
+        <div class="form-group">
+          <label>Exam Date & Time</label>
+          <input type="datetime-local" id="ex-date">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Subject / Board</label>
+        <input type="text" id="ex-board" placeholder="e.g. WAEC, NECO, JAMB, IGCSE...">
+      </div>
+      <button class="btn-primary" onclick="addExam()">+ Add Exam</button>
+    </div>
+    <div id="exams-list"></div>
+  </div>
+</div>
+
+<!-- ═══════════════ SYLLABUS PAGE ═══════════════ -->
+<div class="page" id="page-syllabus">
+  <div class="inner-hero">
+    <h1>Syllabus Tracker</h1>
+    <p>Track topics across all your subjects</p>
+  </div>
+  <div class="page-content">
+    <div id="syllabus-overview"></div>
+    <div class="card">
+      <h3>Add Subject / Topic</h3>
+      <div class="two-col">
+        <div class="form-group">
+          <label>Subject Name</label>
+          <input type="text" id="sy-subject" placeholder="e.g. Chemistry" list="sy-subjects-list">
+          <datalist id="sy-subjects-list"></datalist>
+        </div>
+        <div class="form-group">
+          <label>Topic</label>
+          <input type="text" id="sy-topic" placeholder="e.g. Organic Chemistry">
+        </div>
+      </div>
+      <button class="btn-primary" onclick="addTopic()">+ Add Topic</button>
+    </div>
+    <div id="syllabus-list"></div>
+  </div>
+</div>
+
+<script>
+// ─── STATE ───
+let goals = JSON.parse(localStorage.getItem('zs_goals')||'[]');
+let exams = JSON.parse(localStorage.getItem('zs_exams')||'[]');
+let sessions = JSON.parse(localStorage.getItem('zs_sessions')||'[]');
+let syllabus = JSON.parse(localStorage.getItem('zs_syllabus')||'{}'); // {subject:[{id,text,done}]}
+let profile = JSON.parse(localStorage.getItem('zs_profile')||'{}');
+
+// ─── NAVIGATION ───
+function gotoPage(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  const idx = ['home','profile','timetable','goals','exams','syllabus'].indexOf(id);
+  document.querySelectorAll('.nav-link')[idx].classList.add('active');
+  window.scrollTo(0,0);
+  if(id==='timetable') renderTimetable();
+  if(id==='goals') renderGoals();
+  if(id==='exams') renderExams();
+  if(id==='syllabus') renderSyllabus();
+  if(id==='profile') updateProfileStats();
+}
+
+// ─── NOTIFICATIONS ───
+function showNotif(msg) {
+  const n = document.getElementById('notif');
+  document.getElementById('notif-msg').textContent = msg;
+  n.classList.add('show');
+  setTimeout(()=>n.classList.remove('show'), 4000);
+}
+
+// ─── MOTIVATION ───
+const quotes = [
+  {q:"The secret of getting ahead is getting started.",a:"— Mark Twain"},
+  {q:"Don't watch the clock; do what it does. Keep going.",a:"— Sam Levenson"},
+  {q:"Success is the sum of small efforts, repeated day in and day out.",a:"— Robert Collier"},
+  {q:"You don't have to be great to start, but you have to start to be great.",a:"— Zig Ziglar"},
+  {q:"The harder you work for something, the greater you'll feel when you achieve it.",a:""},
+  {q:"Push yourself, because no one else is going to do it for you.",a:""},
+  {q:"Great things never come from comfort zones.",a:""},
+  {q:"Dream it. Wish it. Do it.",a:""},
+  {q:"Success doesn't just find you. You have to go out and get it.",a:""},
+  {q:"The key to success is to focus on goals, not obstacles.",a:""},
+];
+let mIdx = 0;
+function initMotivation() {
+  const c = document.getElementById('motiv-carousel');
+  quotes.forEach((q,i)=>{
+    const d = document.createElement('div');
+    d.className = 'motivation-quote' + (i===0?' show':'');
+    d.innerHTML = `"${q.q}" <div class="motivation-author">${q.a}</div>`;
+    c.appendChild(d);
+  });
+  setInterval(()=>{
+    const els = c.querySelectorAll('.motivation-quote');
+    els[mIdx].classList.remove('show');
+    mIdx = (mIdx+1)%quotes.length;
+    els[mIdx].classList.add('show');
+  }, 5000);
+}
+initMotivation();
+
+// ─── PROFILE ───
+function loadProfile() {
+  if(profile.name) { document.getElementById('p-name').value=profile.name; document.getElementById('display-name').textContent=profile.name; }
+  if(profile.email) { document.getElementById('p-email').value=profile.email; document.getElementById('display-email').textContent=profile.email; }
+  if(profile.school) document.getElementById('p-school').value=profile.school;
+  if(profile.level) document.getElementById('p-level').value=profile.level;
+  if(profile.bio) document.getElementById('p-bio').value=profile.bio;
+  if(profile.avatar) { document.getElementById('avatar-img').src=profile.avatar; document.getElementById('avatar-img').style.display='block'; document.getElementById('avatar-emoji').style.display='none'; }
+}
+function updateProfile() {
+  const n = document.getElementById('p-name').value;
+  const e = document.getElementById('p-email').value;
+  document.getElementById('display-name').textContent = n||'Your Name';
+  document.getElementById('display-email').textContent = e||'your@email.com';
+}
+function saveProfile() {
+  profile = {
+    name: document.getElementById('p-name').value,
+    email: document.getElementById('p-email').value,
+    school: document.getElementById('p-school').value,
+    level: document.getElementById('p-level').value,
+    bio: document.getElementById('p-bio').value,
+    avatar: profile.avatar||''
+  };
+  localStorage.setItem('zs_profile', JSON.stringify(profile));
+  showNotif('✅ Profile saved!');
+  updateProfileStats();
+}
+function loadAvatar(e) {
+  const file = e.target.files[0]; if(!file) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    profile.avatar = ev.target.result;
+    localStorage.setItem('zs_profile', JSON.stringify(profile));
+    document.getElementById('avatar-img').src=ev.target.result;
+    document.getElementById('avatar-img').style.display='block';
+    document.getElementById('avatar-emoji').style.display='none';
+  };
+  r.readAsDataURL(file);
+}
+function updateProfileStats() {
+  document.getElementById('st-goals').textContent = goals.length;
+  document.getElementById('st-exams').textContent = exams.length;
+  const all = Object.values(syllabus).flat();
+  const pct = all.length ? Math.round(all.filter(t=>t.done).length/all.length*100) : 0;
+  document.getElementById('st-topics').textContent = pct+'%';
+}
+loadProfile();
+
+// ─── TIMETABLE ───
+const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const HOURS = Array.from({length:14},(_,i)=>i+7); // 7am - 8pm
+
+function renderTimetable() {
+  const g = document.getElementById('timetable-grid');
+  g.innerHTML = '';
+  g.className = 'timetable-grid';
+  // headers
+  const corner = document.createElement('div'); corner.className='tt-header'; corner.textContent=''; g.appendChild(corner);
+  const dayOrder = [1,2,3,4,5,6,0];
+  dayOrder.forEach(d=>{ const h=document.createElement('div'); h.className='tt-header'; h.textContent=DAYS[d]; g.appendChild(h); });
+  // rows
+  HOURS.forEach(h=>{
+    const tc = document.createElement('div'); tc.className='tt-time'; tc.textContent=`${h}:00`; g.appendChild(tc);
+    dayOrder.forEach(d=>{
+      const cell = document.createElement('div'); cell.className='tt-cell';
+      cell.title='Click to add';
+      sessions.filter(s=>+s.day===d && +s.startH===h).forEach(s=>{
+        const e=document.createElement('div'); e.className='tt-entry';
+        e.innerHTML=`<b>${s.subject}</b><br>${s.start}-${s.end}`;
+        e.title='Click to delete';
+        e.onclick=(ev)=>{ev.stopPropagation();deleteSession(s.id);};
+        cell.appendChild(e);
+      });
+      g.appendChild(cell);
+    });
+  });
+}
+
+function addSession() {
+  const sub = document.getElementById('tt-subject').value.trim();
+  const day = document.getElementById('tt-day').value;
+  const start = document.getElementById('tt-start').value;
+  const end = document.getElementById('tt-end').value;
+  const rem = document.getElementById('tt-reminder').value;
+  if(!sub||!start||!end){showNotif('⚠️ Fill in subject, start & end time');return;}
+  const id = Date.now();
+  const startH = parseInt(start.split(':')[0]);
+  sessions.push({id,subject:sub,day,start,end,startH,reminder:rem});
+  localStorage.setItem('zs_sessions',JSON.stringify(sessions));
+  if(+rem>0) scheduleReminder(sub,start,day,+rem);
+  renderTimetable();
+  showNotif(`📌 "${sub}" added to ${DAYS[day]}`);
+}
+
+function deleteSession(id) {
+  sessions=sessions.filter(s=>s.id!==id);
+  localStorage.setItem('zs_sessions',JSON.stringify(sessions));
+  renderTimetable();
+}
+
+function scheduleReminder(sub,start,day,minsB) {
+  const now = new Date();
+  const target = new Date();
+  const [h,m]=start.split(':').map(Number);
+  target.setHours(h,m-minsB,0,0);
+  const daysUntil = ((+day - now.getDay())+7)%7;
+  target.setDate(now.getDate()+daysUntil);
+  const ms = target-now;
+  if(ms>0) setTimeout(()=>showNotif(`⏰ "${sub}" starts in ${minsB} minutes!`),ms);
+}
+
+// ─── GOALS ───
+function selectChip(el, hiddenId) {
+  el.closest('.chip-row').querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById(hiddenId).value = el.dataset.val;
+}
+function addGoal() {
+  const title = document.getElementById('g-title').value.trim();
+  const date = document.getElementById('g-date').value;
+  const cat = document.getElementById('g-cat').value;
+  const notes = document.getElementById('g-notes').value.trim();
+  if(!title){showNotif('⚠️ Enter a goal title');return;}
+  goals.push({id:Date.now(),title,date,cat,notes,done:false});
+  localStorage.setItem('zs_goals',JSON.stringify(goals));
+  document.getElementById('g-title').value='';
+  document.getElementById('g-notes').value='';
+  renderGoals();
+  showNotif(`🎯 Goal added: "${title}"`);
+}
+function toggleGoal(id) {
+  goals=goals.map(g=>g.id===id?{...g,done:!g.done}:g);
+  localStorage.setItem('zs_goals',JSON.stringify(goals));
+  renderGoals();
+}
+function deleteGoal(id) {
+  goals=goals.filter(g=>g.id!==id);
+  localStorage.setItem('zs_goals',JSON.stringify(goals));
+  renderGoals();
+}
+function renderGoals() {
+  const list = document.getElementById('goals-list');
+  const done = goals.filter(g=>g.done).length;
+  const pct = goals.length?Math.round(done/goals.length*100):0;
+  document.getElementById('goals-count-label').textContent=`${done} / ${goals.length} goals completed`;
+  document.getElementById('goals-pct').textContent=pct+'%';
+  document.getElementById('goals-bar').style.width=pct+'%';
+  if(!goals.length){list.innerHTML='<div class="empty-state"><div class="emo">🎯</div><p>No goals yet. Add your first goal above!</p></div>';return;}
+  list.innerHTML = goals.map(g=>`
+    <div class="goal-item" style="${g.done?'opacity:0.6':''}">
+      <div class="goal-check ${g.done?'done':''}" onclick="toggleGoal(${g.id})"></div>
+      <div class="goal-text">
+        <h4 style="${g.done?'text-decoration:line-through;color:var(--text-muted)':''}">${g.title}</h4>
+        <div class="goal-meta">
+          <span class="tag ${g.cat==='Short-term'?'tag-short':g.cat==='Mid-term'?'tag-mid':'tag-long'}">${g.cat}</span>
+          ${g.date?`📅 ${new Date(g.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}`:''} 
+          ${g.notes?`· ${g.notes}`:''}
+        </div>
+      </div>
+      <button class="goal-delete" onclick="deleteGoal(${g.id})">✕</button>
+    </div>
+  `).join('');
+}
+
+// ─── EXAMS ───
+function addExam() {
+  const name = document.getElementById('ex-name').value.trim();
+  const date = document.getElementById('ex-date').value;
+  const board = document.getElementById('ex-board').value.trim();
+  if(!name||!date){showNotif('⚠️ Enter exam name and date');return;}
+  exams.push({id:Date.now(),name,date,board});
+  localStorage.setItem('zs_exams',JSON.stringify(exams));
+  document.getElementById('ex-name').value='';
+  document.getElementById('ex-board').value='';
+  renderExams();
+  showNotif(`📚 Exam added: "${name}"`);
+  // Schedule 1-day reminder
+  const examDate = new Date(date);
+  const oneDayB = new Date(examDate.getTime()-24*60*60*1000);
+  const ms = oneDayB-Date.now();
+  if(ms>0) setTimeout(()=>showNotif(`⚠️ "${name}" is TOMORROW! Are you ready?`),ms);
+}
+function deleteExam(id){
+  exams=exams.filter(e=>e.id!==id);
+  localStorage.setItem('zs_exams',JSON.stringify(exams));
+  renderExams();
+}
+function renderExams() {
+  const list = document.getElementById('exams-list');
+  if(!exams.length){list.innerHTML='<div class="empty-state"><div class="emo">⏳</div><p>No exams added yet.</p></div>';return;}
+  const sorted = [...exams].sort((a,b)=>new Date(a.date)-new Date(b.date));
+  list.innerHTML = sorted.map(ex=>{
+    const diff = new Date(ex.date)-Date.now();
+    const isPast = diff<0;
+    const days = Math.abs(Math.floor(diff/(1000*60*60*24)));
+    const hrs = Math.abs(Math.floor((diff%(1000*60*60*24))/(1000*60*60)));
+    const mins = Math.abs(Math.floor((diff%(1000*60*60))/(1000*60)));
+    const secs = Math.abs(Math.floor((diff%(1000*60))/1000));
+    const urgent = !isPast && days<7;
+    return `<div class="exam-card ${urgent?'urgent':''}">
+      <button class="exam-delete" onclick="deleteExam(${ex.id})">✕ Remove</button>
+      <h3>${ex.name}</h3>
+      <div class="exam-date">${ex.board?ex.board+' · ':''}${new Date(ex.date).toLocaleString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'})}</div>
+      ${isPast?`<div style="color:#ff6b6b;font-weight:700">Exam has passed</div>`:`
+      <div class="countdown-boxes">
+        <div class="cd-box"><div class="cd-num" id="cd-d-${ex.id}">${days}</div><div class="cd-lbl">Days</div></div>
+        <div class="cd-box"><div class="cd-num" id="cd-h-${ex.id}">${hrs}</div><div class="cd-lbl">Hours</div></div>
+        <div class="cd-box"><div class="cd-num" id="cd-m-${ex.id}">${mins}</div><div class="cd-lbl">Mins</div></div>
+        <div class="cd-box"><div class="cd-num" id="cd-s-${ex.id}">${secs}</div><div class="cd-lbl">Secs</div></div>
+      </div>`}
+    </div>`;
+  }).join('');
+}
+// Live countdown tick
+setInterval(()=>{
+  exams.forEach(ex=>{
+    const d=document.getElementById('cd-d-'+ex.id);
+    if(!d) return;
+    const diff=new Date(ex.date)-Date.now();
+    if(diff<0) return;
+    d.textContent=Math.floor(diff/(1000*60*60*24));
+    document.getElementById('cd-h-'+ex.id).textContent=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+    document.getElementById('cd-m-'+ex.id).textContent=Math.floor((diff%(1000*60*60))/(1000*60));
+    document.getElementById('cd-s-'+ex.id).textContent=Math.floor((diff%(1000*60))/1000);
+  });
+},1000);
+
+// ─── SYLLABUS ───
+function addTopic() {
+  const sub = document.getElementById('sy-subject').value.trim();
+  const topic = document.getElementById('sy-topic').value.trim();
+  if(!sub||!topic){showNotif('⚠️ Enter subject and topic');return;}
+  if(!syllabus[sub]) syllabus[sub]=[];
+  syllabus[sub].push({id:Date.now(),text:topic,done:false});
+  localStorage.setItem('zs_syllabus',JSON.stringify(syllabus));
+  document.getElementById('sy-topic').value='';
+  updateSubjectDatalist();
+  renderSyllabus();
+  showNotif(`📖 Added "${topic}" to ${sub}`);
+}
+function toggleTopic(sub,id){
+  syllabus[sub]=syllabus[sub].map(t=>t.id===id?{...t,done:!t.done}:t);
+  localStorage.setItem('zs_syllabus',JSON.stringify(syllabus));
+  renderSyllabus();
+}
+function deleteTopic(sub,id){
+  syllabus[sub]=syllabus[sub].filter(t=>t.id!==id);
+  if(!syllabus[sub].length) delete syllabus[sub];
+  localStorage.setItem('zs_syllabus',JSON.stringify(syllabus));
+  renderSyllabus();
+}
+function updateSubjectDatalist(){
+  const dl=document.getElementById('sy-subjects-list');
+  dl.innerHTML=Object.keys(syllabus).map(s=>`<option value="${s}">`).join('');
+}
+function renderSyllabus(){
+  const subs = Object.keys(syllabus);
+  const allTopics = subs.flatMap(s=>syllabus[s]);
+  const totalDone = allTopics.filter(t=>t.done).length;
+  const totalAll = allTopics.length;
+  const pct = totalAll?Math.round(totalDone/totalAll*100):0;
+  const circ = 2*Math.PI*32;
+  const dashOffset = circ*(1-pct/100);
+  document.getElementById('syllabus-overview').innerHTML = `
+    <div class="overall-progress">
+      <div class="op-ring">
+        <svg width="80" height="80" viewBox="0 0 80 80">
+          <circle class="ring-bg" cx="40" cy="40" r="32"/>
+          <circle class="ring-fill" cx="40" cy="40" r="32" stroke-dasharray="${circ}" stroke-dashoffset="${dashOffset}"/>
+        </svg>
+        <div class="ring-text">${pct}%</div>
+      </div>
+      <div class="op-info">
+        <h4>Overall Syllabus Progress</h4>
+        <p>${totalDone} of ${totalAll} topics completed · ${subs.length} subject${subs.length!==1?'s':''}</p>
+      </div>
+    </div>`;
+  const list = document.getElementById('syllabus-list');
+  if(!subs.length){list.innerHTML='<div class="empty-state"><div class="emo">📚</div><p>No topics yet. Add a subject and topic above!</p></div>';return;}
+  list.innerHTML=subs.map(sub=>{
+    const topics=syllabus[sub];
+    const done=topics.filter(t=>t.done).length;
+    const p=topics.length?Math.round(done/topics.length*100):0;
+    return `<div class="subject-card">
+      <div class="subject-header">
+        <h3>${sub}</h3>
+        <span class="subject-progress-text">${done}/${topics.length} · ${p}%</span>
+      </div>
+      <div class="subject-body">
+        <div class="progress-bar-wrap" style="margin-bottom:1rem"><div class="progress-bar-fill" style="width:${p}%"></div></div>
+        ${topics.map(t=>`
+          <div class="topic-item">
+            <input type="checkbox" class="topic-checkbox" ${t.done?'checked':''} onchange="toggleTopic('${sub}',${t.id})">
+            <span class="topic-name ${t.done?'done':''}">${t.text}</span>
+            <button class="topic-delete" onclick="deleteTopic('${sub}',${t.id})">✕</button>
+          </div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+  updateSubjectDatalist();
+}
+
+// ─── INIT ───
+renderTimetable();
+renderGoals();
+renderExams();
+renderSyllabus();
+updateProfileStats();
+</script>
+</body>
+</html>
